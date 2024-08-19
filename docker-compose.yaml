@@ -1,0 +1,28 @@
+services:
+  go-rest-api:
+    build: .
+    image: go-rest-api:latest
+    container_name: go-rest-api
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_HOST: "mssql"
+      DATABASE_PORT: "1433"
+      DATABASE_USER: "SA"
+      DATABASE_PASS: "yourStrongPassword#"
+      DATABASE_NAME: "master"
+    depends_on:
+      - mssql
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      MSSQL_SA_PASSWORD: "yourStrongPassword#"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql/data
+
+volumes:
+  mssql_data:
+    name: mssql_data

@@ -20,4 +20,6 @@ RUN chmod -R 755 /app && chown -R appuser:appuser /app
 
 USER appuser:appuser
 
+EXPOSE 8080
+
 CMD [ "/app/main" ]
