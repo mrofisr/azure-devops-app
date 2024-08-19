@@ -16,7 +16,7 @@ jobs:
         run: |
           if [[ $GITHUB_REF == refs/tags/v*.*.* ]]; then
             echo "Version: ${GITHUB_REF#refs/tags/v}"
-            echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+            echo "VERSION=v${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
           elif [[ $GITHUB_REF == refs/heads/main ]]; then
             echo "Version: latest"
             echo "VERSION=latest" >> $GITHUB_ENV
