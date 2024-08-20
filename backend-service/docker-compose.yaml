@@ -11,8 +11,11 @@ services:
       DATABASE_USER: "SA"
       DATABASE_PASS: "yourStrongPassword#"
       DATABASE_NAME: "master"
+      AZ_VAULT_URL: ""
+      AZ_TOKEN: ""
     depends_on:
       - mssql
+
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:

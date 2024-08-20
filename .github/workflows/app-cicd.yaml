@@ -1,4 +1,5 @@
-name: Build Stage
+name: CI CD Pipeline
+
 on:
   push:
     tags:
@@ -7,9 +8,31 @@ on:
       - main
 
 jobs:
-  Build:
-    name: build
+  test:
+    name: Unit Testing Stage
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./backend-service
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+      - name: Setup Golang
+        uses: actions/setup-go@v3
+        with:
+          go-version: ">=1.20"
+      - name: Download Module
+        run: go mod download
+      - name: Run unit-testing
+        run: go test ./internal/repository -v
+  build:
+    name: Build Stage
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./backend-service
     steps:
       - name: Get the version
         id: version
@@ -23,7 +46,7 @@ jobs:
           fi
       - name: Checkout Repo
         id: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Golang
         id: setup-go
         uses: actions/setup-go@v3
@@ -53,3 +76,25 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/go-rest-api:${{ env.VERSION }}
+  deploy:
+    name: Deploying Stage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Azure CLI script
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az account show
+      - name: Setup Terraform with specified version on the runner
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.7

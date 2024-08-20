@@ -10,6 +10,7 @@ import (
 
 	_ "github.com/denisenkom/go-mssqldb"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/joho/godotenv"
 	"github.com/mrofisr/azure-devops/internal/handler"
 	"github.com/mrofisr/azure-devops/internal/repository"
@@ -34,6 +35,7 @@ func main() {
 	postRepo := repository.NewPostRepository(conn)
 	postHandler := handler.NewPostHandler(postRepo)
 	r := chi.NewRouter()
+	r.Use(middleware.Logger)
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(`{"message": "hello world"}`))

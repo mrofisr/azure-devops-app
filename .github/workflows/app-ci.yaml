@@ -1,13 +1,18 @@
-name: Unit Testing Stage
+name: CI Pipeline
+
 on:
   pull_request:
     branches:
       - main
 
 jobs:
-  Test:
-    name: unit-testing
+  test:
+    name: Unit Testing Stage
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./backend-service
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
