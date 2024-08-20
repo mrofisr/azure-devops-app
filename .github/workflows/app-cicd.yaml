@@ -38,6 +38,7 @@ jobs:
         working-directory: ./backend-service
     steps:
       - name: Get the version
+        working-directory: ./
         id: version
         run: |
           if [[ $GITHUB_REF == refs/tags/v*.*.* ]]; then
